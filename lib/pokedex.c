@@ -32,12 +32,12 @@ create_node(char *nome, char *raca, char *alimentacao, float peso, float tamanho
 
 //criacao da cabeca de cada lista encadiada
 
-struct inicial_pokemo *
+struct inicial_pokemon 
 create_cabeca()
 {
-    struct inicial_pokemon *aux = (struct inicial_pokemon *)malloc(sizeof(struct inicial_pokemon));
-    aux->init = NULL;
-    aux->size = 0;
+    struct inicial_pokemon aux;
+    aux.init = NULL;
+    aux.size = 0;
     return aux;
 }
 
@@ -47,5 +47,28 @@ int
 hash_i(char *nome)
 {
     return (((int)nome[0]) - 97);
+}
+
+void 
+insert(char *nome, char *raca, char *alimentacao, float peso, float tamanho)
+{   
+    if (hash[hash_i(nome)].init == NULL)
+    {
+        hash[hash_i(nome)].init = create_node(nome, raca, alimentacao, peso, tamanho);
+        hash[hash_i(nome)].init->previus = NULL;
+        hash[hash_i(nome)].init->next = NULL;
+    }
+    else
+    {
+        struct Pokemon *aux = hash[hash_i(nome)].init;
+        while(aux->next != NULL)
+        {
+            aux = aux->next;
+        }
+        aux->next = create_node(nome, raca, alimentacao, peso, tamanho);
+        aux->next->previus = aux;
+        aux->next->next = NULL;
+    }
+    return;
 }
 
