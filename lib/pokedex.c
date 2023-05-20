@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "../include/pokedex.h"
 
@@ -72,3 +73,58 @@ insert(char *nome, char *raca, char *alimentacao, float peso, float tamanho)
     return;
 }
 
+void
+print(struct Pokemon *pk)
+{
+    fprintf(stdout, "nome do pokemon\traca\talimentacao\tpeso\ttamanho\n");
+    fprintf(stdout, "%s\t%s\t%s\t%.2f\t%.2f\n", pk->nome, pk->raca, pk->alimentacao, pk->peso, pk->tamanho);
+}
+
+struct Pokemon *
+search(char *name)
+{
+    struct Pokemon *aux = hash[hash_i(name)].init;
+    if(aux == NULL)
+    {
+        fprintf(stderr, "Nao existem pokemons na sua lista");
+        return ((struct Pokemon *)NULL);
+    }
+    if (strcmp(aux->nome, name) == 0)
+    {        
+        return aux;
+    }
+    aux = aux->next;
+    while(aux != NULL)
+    {
+        if (strcmp(aux->nome, name) == 0)
+        {          
+            break;
+        }
+        aux = aux->next;
+    }
+    return aux;
+}
+
+void
+save(struct inicial_pokemon tabela[])
+{
+    FILE *save = fopen("../save/pokedex.txt", "w");
+    size_t tam = (sizeof(tabela)/sizeof(tabela[0]));
+    struct Pokemon *aux = NULL;
+
+    time_t start = time(NULL);
+
+    for(int i = 0; i < tam; i++)
+    {
+
+        aux = hash[i].init;
+        while (aux != NULL)
+        {
+            fprintf(save, "%s\t%s\t%s\t%.2f\t%.2f\n", aux->nome, aux->raca, aux->alimentacao, aux->peso, aux->tamanho);
+            aux = aux->next;  
+        }
+    }
+    return;
+}
+
+void load
