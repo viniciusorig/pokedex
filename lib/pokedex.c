@@ -50,6 +50,8 @@ hash_i(char *nome)
     return (((int)nome[0]) - 97);
 }
 
+//insercao de pokemons
+
 void 
 insert(char *nome, char *raca, char *alimentacao, float peso, float tamanho)
 {   
@@ -73,12 +75,16 @@ insert(char *nome, char *raca, char *alimentacao, float peso, float tamanho)
     return;
 }
 
+//print de todos os pokemons
+
 void
 print(struct Pokemon *pk)
 {
     fprintf(stdout, "nome do pokemon\traca\talimentacao\tpeso\ttamanho\n");
     fprintf(stdout, "%s\t%s\t%s\t%.2f\t%.2f\n", pk->nome, pk->raca, pk->alimentacao, pk->peso, pk->tamanho);
 }
+
+//busca dos pokemons adicionados
 
 struct Pokemon *
 search(char *name)
@@ -105,6 +111,8 @@ search(char *name)
     return aux;
 }
 
+//salvando os pokemons dentro de um arquivo
+
 void
 save(struct inicial_pokemon tabela[])
 {
@@ -124,7 +132,46 @@ save(struct inicial_pokemon tabela[])
             aux = aux->next;  
         }
     }
+    fclose(save);
     return;
 }
 
-void load
+//carregando os pokemons para a memoria de programa
+
+void
+load_file()
+{
+    FILE *save;
+    if((save = fopen("../save/pokedex.txt", "r")) == NULL)
+    {
+        fprintf(stderr, "Erro ao carregar a lista\n");
+        exit(EXIT_FAILURE);
+    }
+
+    char **matrix = (char **)malloc(sizeof(char));
+    *matrix = (char *)malloc(sizeof(char));
+    char c = 0;
+    int i = 0, j = 0;
+
+    while(feof(save) == 0)
+    {
+        c = fgetc(save);
+        if(c == '\n')
+        {
+            insert(matrix[i], matrix[i+1], matrix[i+2], atof(matrix[i+3]), atof(matrix[i+4]));
+            memset(matrix, 0, i);
+            i = 0, j = 0;
+        }
+        if(c == '\t') 
+        {
+            i++;
+            continue;
+        }
+        else
+        {
+            matrix[i][j] = c;
+            j++;
+            realloc(matrix[i], ((j+1)*sizeof(char)));
+        }
+    }
+}
